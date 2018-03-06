@@ -72,7 +72,6 @@ Game.prototype.startTimer = function(timer) {
   var that = this,
     countdownStartValue = timer;
   this.currentTimerHandle = setInterval(function() {
-    console.log(countdownStartValue, timer, game.currentTimerHandle, game.answerPageActive);
     $('.timer').text(--countdownStartValue);
     if (countdownStartValue === 0 && game.answerPageActive) {
       $('.answer-page').fadeOut();
@@ -131,7 +130,6 @@ Game.prototype.createAnswerPage = function() {
 
 Game.prototype.createScorePage = function() {
   this.killTimer();
-  console.log('right answers: ' + this.correctAnswerCount, 'wrong answers: ' + this.wrongAnswerCount);
   var html = '<h2 class="mb-5">correct answers: ' + this.correctAnswerCount + '</h2>' +
           '<h2>wrong answers: ' + this.wrongAnswerCount + '</h2>';
   $('.final-score').html(html);
@@ -161,7 +159,6 @@ Game.prototype.createScorePage = function() {
 // };
 
 Game.prototype.chooseAnswer = function() {
-  console.log('clicked', game.questionCount);
   game.chosenAnswer = $(this).text();
   if (game.chosenAnswer === game.randomQuestionAnswer) {
     game.result = 'correct';
