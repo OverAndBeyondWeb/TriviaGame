@@ -132,29 +132,33 @@ Game.prototype.createAnswerPage = function() {
 Game.prototype.createScorePage = function() {
   this.killTimer();
   console.log('right answers: ' + this.correctAnswerCount, 'wrong answers: ' + this.wrongAnswerCount);
+  var html = '<h2 class="mb-5">correct answers: ' + this.correctAnswerCount + '</h2>' +
+          '<h2>wrong answers: ' + this.wrongAnswerCount + '</h2>';
+  $('.final-score').html(html);
+  $('.final-score').fadeIn();
 }
 
-Game.prototype.switchPage = function() {
-  if (this.questionPageActive) {
-    $('.question-page').fadeOut();
-    this.createAnswerPage();
-    $('.answer-page').fadeIn();
-    this.questionPageActive = false;
-    console.log('answer page');
-  } else {
-    if (this.questionCount === this.numQuestions) {
-      $('.answer-page').fadeOut();
-      this.createScorePage();
-      $('.final-score').fadeIn();
-    } else {
-      $('.answer-page').fadeOut();
-      this.createQuestionPage();
-      $('.question-page').fadeIn();
-      this.questionPageActive = true;
-      console.log('question page');
-    } 
-  }
-};
+// Game.prototype.switchPage = function() {
+//   if (this.questionPageActive) {
+//     $('.question-page').fadeOut();
+//     this.createAnswerPage();
+//     $('.answer-page').fadeIn();
+//     this.questionPageActive = false;
+//     console.log('answer page');
+//   } else {
+//     if (this.questionCount === this.numQuestions) {
+//       $('.answer-page').fadeOut();
+//       this.createScorePage();
+//       $('.final-score').fadeIn();
+//     } else {
+//       $('.answer-page').fadeOut();
+//       this.createQuestionPage();
+//       $('.question-page').fadeIn();
+//       this.questionPageActive = true;
+//       console.log('question page');
+//     } 
+//   }
+// };
 
 Game.prototype.chooseAnswer = function() {
   console.log('clicked', game.questionCount);
