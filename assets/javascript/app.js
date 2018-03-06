@@ -95,7 +95,6 @@ Game.prototype.killTimer = function() {
 }
 
 Game.prototype.createQuestionPage = function() {
-  console.log('quewttion');
   this.setRandomQuestionAndAnswer();
   this.answerPageActive = false;
   this.questionCount++;
@@ -158,24 +157,16 @@ Game.prototype.switchPage = function() {
 
 Game.prototype.chooseAnswer = function() {
   console.log('clicked', game.questionCount);
-  
-  $('.question-page').fadeOut();
-  if (game.questionCount < game.numQuestions) {
-    game.createAnswerPage();
+  game.chosenAnswer = $(this).text();
+  if (game.chosenAnswer === game.randomQuestionAnswer) {
+    game.result = 'correct';
+    game.correctAnswerCount++;
+  } else {
+    game.result = 'wrong answer';
+    game.wrongAnswerCount++;
   }
-  //game.killTimer();
-  // console.log(game.currentTimerHandle);
-  // game.chosenAnswer = $(this).text();
-  // if (game.chosenAnswer === game.randomQuestionAnswer) {
-  //   game.result = 'correct';
-  //   game.correctAnswerCount++;
-  // } else {
-  //   game.result = 'wrong answer';
-  //   game.wrongAnswerCount++;
-  // }
-  // //setTimeout(function() {
-  //   game.switchPage();
-  // //}, 500);
+  $('.question-page').fadeOut();
+  game.createAnswerPage();
 };
 
 //instantiate game variable
