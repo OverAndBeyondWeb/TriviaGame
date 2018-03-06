@@ -49,12 +49,12 @@ var Game = function(questions, numQuestions, questionTime) {
   this.randomQuestionAnswer = '';
   this.numQuestions = numQuestions;
   this.questionTime = questionTime;
-  this.questionTimer = 10;
-  this.answerTimer = 10;
-  this.questionCounter = 0;
-  this.wrongAnswer = 0;
-  this.correctAnswer = 0;
-  this.questionPageActive = false;
+  this.questionTimerValue = 11;
+  this.answerTimerValue = 10;
+  this.questionCount = 0;
+  this.wrongAnswerCount = 0;
+  this.correctAnswerCount = 0;
+  this.answerPageActive = false;
   this.answers = this.questions.map(function(item) {
     return item.answer;
   });
@@ -71,26 +71,35 @@ Game.prototype.startTimer = function(timer) {
 
   var that = this,
     countdownStartValue = timer;
-  this.handle = setInterval(function() {
-    console.log(countdownStartValue, timer, game.handle);
+  this.currentTimerHandle = setInterval(function() {
+    console.log(countdownStartValue, timer, game.currentTimerHandle, game.answerPageActive);
     $('.timer').text(--countdownStartValue);
-    if (countdownStartValue === 0) {
-      clearInterval(game.handle);
-      if (game.questionPageActive) {
-        game.result = 'wrong answer';
-        game.wrongAnswer++;
-      }
-      
-      that.switchPage();
+    if (countdownStartValue === 0 && game.answerPageActive) {
+      $('.answer-page').fadeOut();
+      console.log(game.questionCount, game.numQuestions, game.questionCount < game.numQuestions);
+      if(game.questionCount < game.numQuestions) {
+        console.log('this shit true');
+        game.createQuestionPage();
+      } else {
+        game.createScorePage();
+      } 
+    } else if (countdownStartValue === 0){
+      $('.question-page').fadeOut();
+      game.createAnswerPage();
     }
   }, 1000);
 };
 
+Game.prototype.killTimer = function() {
+  clearInterval(this.currentTimerHandle);
+}
+
 Game.prototype.createQuestionPage = function() {
+  console.log('quewttion');
   this.setRandomQuestionAndAnswer();
-  this.questionPageActive = true;
-  this.questionCounter++;
-  var html = '<h2 class="timer mb-5">' + this.questionTimer + '</h2>' +
+  this.answerPageActive = false;
+  this.questionCount++;
+  var html = '<h2 class="timer mb-5">' + this.questionTimerValue + '</h2>' +
              '<h2 class="mb-5">' + this.randomQuestion + '?</h2>' +
              '<h2 class="answer-choice">' + this.randomQuestionAnswer + '</h2>' +
              '<h2 class="answer-choice">' + this.answers[Math.floor(Math.random() * this.answers.length)] + '</h2>' +
@@ -99,24 +108,30 @@ Game.prototype.createQuestionPage = function() {
 
   
   $('.question-page').html(html);
+  $('.question-page').fadeIn();
   $('.question-page').on('click', '.answer-choice', this.chooseAnswer);
-  this.startTimer(this.questionTimer);
+  this.killTimer();
+  this.startTimer(this.questionTimerValue);
   
 };
 
 Game.prototype.createAnswerPage = function() {
-
-  var html = '<h2 class="timer mb-5">' + this.answerTimer + '</h2>' +
+  this.killTimer();
+  this.answerPageActive = true;
+  var html = '<h2 class="timer mb-5">' + this.answerTimerValue + '</h2>' +
             '<h1 class="mb-5">' + this.randomQuestion + '?</h1>' +
             '<h1 class="mb-5">' + this.result + '</h1>' + 
             '<h1>' + this.randomQuestionAnswer + '</h1>';
 
   $('.answer-page').html(html);
-  this.startTimer(this.answerTimer);
+  $('.answer-page').fadeIn();
+  
+  this.startTimer(this.answerTimerValue);
 };
 
 Game.prototype.createScorePage = function() {
-  console.log('right answers: ' + this.correctAnswer, 'wrong answers: ' + this.wrongAnswer);
+  this.killTimer();
+  console.log('right answers: ' + this.correctAnswerCount, 'wrong answers: ' + this.wrongAnswerCount);
 }
 
 Game.prototype.switchPage = function() {
@@ -127,7 +142,7 @@ Game.prototype.switchPage = function() {
     this.questionPageActive = false;
     console.log('answer page');
   } else {
-    if (this.questionCounter === this.numQuestions) {
+    if (this.questionCount === this.numQuestions) {
       $('.answer-page').fadeOut();
       this.createScorePage();
       $('.final-score').fadeIn();
@@ -142,19 +157,25 @@ Game.prototype.switchPage = function() {
 };
 
 Game.prototype.chooseAnswer = function() {
-  console.log(game.handle);
-  clearInterval(game.handle);
-  game.chosenAnswer = $(this).text();
-  if (game.chosenAnswer === game.randomQuestionAnswer) {
-    game.result = 'correct';
-    game.correctAnswer++;
-  } else {
-    game.result = 'wrong answer';
-    game.wrongAnswer++;
+  console.log('clicked', game.questionCount);
+  
+  $('.question-page').fadeOut();
+  if (game.questionCount < game.numQuestions) {
+    game.createAnswerPage();
   }
-  //setTimeout(function() {
-    game.switchPage();
-  //}, 500);
+  //game.killTimer();
+  // console.log(game.currentTimerHandle);
+  // game.chosenAnswer = $(this).text();
+  // if (game.chosenAnswer === game.randomQuestionAnswer) {
+  //   game.result = 'correct';
+  //   game.correctAnswerCount++;
+  // } else {
+  //   game.result = 'wrong answer';
+  //   game.wrongAnswerCount++;
+  // }
+  // //setTimeout(function() {
+  //   game.switchPage();
+  // //}, 500);
 };
 
 //instantiate game variable
