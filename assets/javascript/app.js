@@ -50,7 +50,7 @@ var Game = function(questions, numQuestions, questionTime) {
   this.numQuestions = numQuestions;
   this.questionTime = questionTime;
   this.questionTimerValue = 11;
-  this.answerTimerValue = 10;
+  this.answerTimerValue = 3;
   this.questionCount = 0;
   this.wrongAnswerCount = 0;
   this.correctAnswerCount = 0;
@@ -115,6 +115,7 @@ Game.prototype.createQuestionPage = function() {
 };
 
 Game.prototype.createAnswerPage = function() {
+  $('.question-page').off();
   this.killTimer();
   this.answerPageActive = true;
   var html = '<h2 class="timer mb-5">' + this.answerTimerValue + '</h2>' +
@@ -161,6 +162,7 @@ Game.prototype.chooseAnswer = function() {
   if (game.chosenAnswer === game.randomQuestionAnswer) {
     game.result = 'correct';
     game.correctAnswerCount++;
+    console.log(game.correctAnswerCount);
   } else {
     game.result = 'wrong answer';
     game.wrongAnswerCount++;
